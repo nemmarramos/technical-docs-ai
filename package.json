@@ -1,0 +1,47 @@
+{
+  "name": "technical-docs-ai",
+  "version": "0.0.1",
+  "description": "Production-ready Retrieval-Augmented Generation system for technical documentation",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "ingest:docs": "tsx src/scripts/ingest.ts",
+    "setup:vectordb": "tsx src/scripts/setup-vectordb.ts",
+    "delete:index": "tsx src/scripts/delete-index.ts",
+    "test:ingestion": "tsx src/scripts/test-ingestion.ts",
+    "test:embedding": "tsx src/scripts/test-embedding.ts",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "validate": "npm run typecheck && npm run lint",
+    "clean": "rm -f SETUP.md MARKDOWN_SUPPORT.md FIXES.md DIMENSION_FIX.md PINECONE_FREE_TIER.md QUICK_FIX.md test-config.js .cleanup.sh"
+  },
+  "keywords": ["rag", "llm", "ai", "documentation", "vector-search"],
+  "author": "Nemmar Ramos <nemmar.ramos@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@pinecone-database/pinecone": "^2.0.1",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.1",
+    "markdown-it": "^14.0.0",
+    "openai": "^4.28.0",
+    "pdf-parse": "^1.1.1",
+    "tiktoken": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/markdown-it": "^13.0.7",
+    "@types/pdf-parse": "^1.1.4",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
+}

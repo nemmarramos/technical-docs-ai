@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/raw/react/  # Include React docs as example dataset
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.history/
+.cleanup.sh
+temp-react-repo/
+test-config.js
+
+# Temporary docs (use cleanup script)
+SETUP.md
+MARKDOWN_SUPPORT.md
+FIXES.md
+DIMENSION_FIX.md
+PINECONE_FREE_TIER.md
+QUICK_FIX.md
