@@ -144,7 +144,7 @@ technical-docs-ai/
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
 | **Runtime** | Node.js 18+ | JavaScript execution |
-| **Language** | TypeScript 5.0+ | Type safety |
+| **Language** | TypeScript 5.3+ | Strict type safety with no `any` types |
 | **Embeddings** | OpenAI API | Vector generation |
 | **Vector DB** | Pinecone | Similarity search |
 | **Parsing** | markdown-it, cheerio, pdf-parse | Document loading |
@@ -159,9 +159,17 @@ technical-docs-ai/
 | Cost per ingestion | < $0.05 | ~$0.02 |
 | Vector upload | < 2 min | ~1-2 min (100 batch) |
 
-## 🧪 Testing
+## 🧪 Testing & Quality
 
 ```bash
+# Type checking (strict mode enabled)
+npm run typecheck
+
+# Code quality checks
+npm run validate     # Run typecheck + lint
+npm run lint         # ESLint validation
+npm run format       # Prettier formatting
+
 # Test document loading and chunking (no API calls)
 npm run test:ingestion
 
@@ -171,6 +179,15 @@ npm run test:embedding
 # Run full pipeline with validation
 npm run ingest:docs
 ```
+
+### Code Quality Standards
+
+- ✅ **Strict TypeScript** - `strict: true` with zero `any` types
+- ✅ **No unused variables** - `noUnusedLocals` and `noUnusedParameters` enabled
+- ✅ **Explicit returns** - `noImplicitReturns` enforced
+- ✅ **Type safety** - All Pinecone SDK types properly typed
+- ✅ **ESLint** - Consistent code style
+- ✅ **Prettier** - Automated formatting
 
 ## 📚 Available Scripts
 
@@ -182,7 +199,10 @@ npm run ingest:docs
 | `npm run test:ingestion` | Test chunking pipeline |
 | `npm run test:embedding` | Test OpenAI embeddings |
 | `npm run build` | Compile TypeScript |
-| `npm run lint` | Check code style |
+| `npm run typecheck` | Run TypeScript type checking |
+| `npm run lint` | Check code style with ESLint |
+| `npm run format` | Format code with Prettier |
+| `npm run validate` | Run typecheck + lint together |
 
 ## 🔧 Configuration Options
 
@@ -224,6 +244,8 @@ CHUNK_OVERLAP=50         # Overlap for context preservation
 - ✅ Intelligent chunking
 - ✅ Vector embeddings
 - ✅ Pinecone integration
+- ✅ Strict TypeScript with zero `any` types
+- ✅ Comprehensive type checking
 
 ### v2.0 (Planned)
 - [ ] Query interface with CLI
@@ -252,11 +274,14 @@ npm install
 # Run in development mode
 npm run dev
 
-# Format code
-npm run format
+# Code quality checks
+npm run typecheck    # Type checking
+npm run lint         # Linting
+npm run format       # Format code
+npm run validate     # Typecheck + lint
 
-# Lint code
-npm run lint
+# Build for production
+npm run build
 ```
 
 ## 📄 License
