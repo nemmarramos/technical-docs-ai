@@ -13,7 +13,7 @@ export interface PineconeConfig {
   region?: string;
 }
 
-export interface SearchResult {
+export interface PineconeSearchResult {
   id: string;
   score: number;
   metadata: RecordMetadata;
@@ -138,7 +138,7 @@ export class PineconeClient {
     queryEmbedding: number[],
     topK: number = 10,
     filter?: Record<string, unknown>
-  ): Promise<SearchResult[]> {
+  ): Promise<PineconeSearchResult[]> {
     const index = this.client.index(this.indexName);
 
     const results = await index.namespace(this.namespace).query({

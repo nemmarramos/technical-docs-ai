@@ -3,4 +3,4 @@
  */
 
 export { PineconeClient } from './pinecone-client.js';
-export type { PineconeConfig, SearchResult } from './pinecone-client.js';
+export type { PineconeConfig, PineconeSearchResult } from './pinecone-client.js';
