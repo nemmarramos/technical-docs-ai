@@ -48,4 +48,4 @@ function App() {
   }
 }
 
-main();
+void main();

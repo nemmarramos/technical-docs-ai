@@ -271,7 +271,10 @@ export class IngestionPipeline {
   /**
    * Get vector database statistics
    */
-  async getVectorDbStats() {
+  async getVectorDbStats(): Promise<{
+    totalVectorCount: number;
+    namespaces: Record<string, { recordCount: number }>;
+  }> {
     return await this.vectorDb.getStats();
   }
 }

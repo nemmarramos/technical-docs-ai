@@ -66,7 +66,7 @@ export class MarkdownLoader extends BaseLoader {
     return files;
   }
 
-  private extractMetadata(content: string) {
+  private extractMetadata(content: string): Record<string, unknown> {
     const metadata: Record<string, unknown> = {
       title: this.extractTitle(content),
       createdAt: new Date(),

@@ -5,7 +5,7 @@
 
 import { MarkdownLoader } from '../ingestion/loaders/index.js';
 
-async function main() {
+async function main(): Promise<void> {
   console.log('🧪 Testing document loader...\n');
 
   try {
@@ -28,4 +28,4 @@ async function main() {
   }
 }
 
-main();
+void main();
