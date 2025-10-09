@@ -1,0 +1,24 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.ts",
+    "src/server.ts",
+    "src/scripts/*.ts"
+  ],
+  "project": [
+    "src/**/*.ts"
+  ],
+  "ignore": [
+    "src/**/*.d.ts"
+  ],
+  "ignoreDependencies": [
+    "@types/node",
+    "jest",
+    "prettier",
+    "tsx",
+    "typescript",
+    "eslint",
+    "knip"
+  ],
+  "ignoreExportsUsedInFile": true
+}

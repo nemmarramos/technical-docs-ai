@@ -1,57 +1,36 @@
 {
-  "name": "technical-docs-ai",
-  "version": "0.0.1",
-  "description": "Production-ready Retrieval-Augmented Generation system for technical documentation",
-  "main": "dist/index.js",
-  "type": "module",
+  "name": "technical-docs-ai-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Technical Docs AI - RAG system with React frontend",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
-    "ingest:docs": "tsx src/scripts/ingest.ts",
-    "setup:vectordb": "tsx src/scripts/setup-vectordb.ts",
-    "delete:index": "tsx src/scripts/delete-index.ts",
-    "test:ingestion": "tsx src/scripts/test-ingestion.ts",
-    "test:embedding": "tsx src/scripts/test-embedding.ts",
-    "test:search": "tsx src/scripts/test-hybrid-search.ts",
-    "demo:rag": "tsx src/scripts/demo-rag.ts",
-    "test": "jest",
-    "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "check-dead-code": "knip",
-    "validate": "npm run typecheck && npm run lint",
-    "clean": "rm -f SETUP.md MARKDOWN_SUPPORT.md FIXES.md DIMENSION_FIX.md PINECONE_FREE_TIER.md QUICK_FIX.md test-config.js .cleanup.sh"
+    "dev": "npm run dev --workspace=packages/rag-engine & npm run dev --workspace=packages/frontend",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "dev:backend": "npm run dev --workspace=packages/rag-engine",
+    "build": "npm run build --workspaces",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "build:backend": "npm run build --workspace=packages/rag-engine",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules",
+    "install:all": "npm install"
   },
   "keywords": [
     "rag",
     "llm",
     "ai",
     "documentation",
-    "vector-search"
+    "react",
+    "monorepo"
   ],
   "author": "Nemmar Ramos <nemmar.ramos@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "@pinecone-database/pinecone": "^2.0.1",
-    "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.4.1",
-    "natural": "^8.1.0",
-    "openai": "^4.28.0",
-    "pdf-parse": "^1.1.1",
-    "tiktoken": "^1.0.10"
-  },
-  "devDependencies": {
-    "@types/natural": "^5.1.5",
-    "@types/node": "^20.11.16",
-    "@types/pdf-parse": "^1.1.4",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
-    "eslint": "^8.56.0",
-    "jest": "^29.7.0",
-    "knip": "^5.64.2",
-    "prettier": "^3.2.5",
-    "tsx": "^4.7.1",
-    "typescript": "^5.3.3"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

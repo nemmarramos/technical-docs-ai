@@ -1,370 +1,356 @@
-# Technical Docs AI - Intelligent Documentation Search
+# Technical Docs AI - Full-Stack RAG Application
 
-> Production-ready RAG system for semantic documentation search with intelligent chunking and vector embeddings.
+> Production-ready Retrieval-Augmented Generation system with React frontend for semantic documentation search
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://reactjs.org/)
 
 ## 🎯 Overview
 
-A complete **Retrieval-Augmented Generation (RAG)** system that combines hybrid search, intelligent re-ranking, and LLM generation to answer technical documentation questions with accurate, cited responses. Built with production-grade engineering practices and strict TypeScript.
-
-### ✨ Latest Updates (Day 2 - RAG Pipeline Complete)
-
-**NEW:** Full Q&A system is now live! Try it with `npm run demo:rag`
-
-The system now features:
-- 🔍 **Hybrid Search** - Combines vector (semantic) + keyword (BM25) search with Reciprocal Rank Fusion
-- 📊 **Re-ranking** - Multiple strategies (MMR, Diversity, Relevance) for optimal result ordering
-- 🎯 **Smart Prompts** - 5 pre-built templates with context injection and token management
+A complete **full-stack RAG (Retrieval-Augmented Generation)** application combining:
+- 🎨 **Modern React Frontend** - Beautiful UI with real-time search, conversation history, and cost tracking
+- ⚡ **Express API Backend** - RESTful API with hybrid search and Q&A endpoints
+- 🔍 **Hybrid Search Engine** - Vector (semantic) + keyword (BM25) search with fusion
 - 🤖 **LLM Integration** - GPT-4o-mini with streaming support for real-time responses
-- 📚 **Automatic Citations** - Every answer includes source files, sections, and line numbers
+- 📚 **Smart Citations** - Automatic source document highlighting and references
 
-### Key Capabilities
+### ✨ Latest Updates (Milestone 3 - Frontend Complete)
 
-- 🔍 **Hybrid Search** - Vector + keyword search with configurable fusion (60/40 default)
-- 📊 **Intelligent Re-ranking** - MMR for diversity, relevance boosting, similarity filtering
-- 📝 **Context Management** - Token-aware prompt building (max 3K tokens)
-- 🤖 **Answer Generation** - Streaming LLM responses with citations
-- 📚 **Smart Chunking** - Markdown-aware splitting that preserves code blocks
-- ⚡ **Fast Performance** - ~8-12 second end-to-end query time
-- 💰 **Cost Efficient** - ~$0.01-0.03 per query with optimizations
+**NEW:** Full-stack application with React frontend is now live!
+
+#### Frontend Features:
+- 🎨 **Beautiful Dark UI** - Modern design with Tailwind CSS
+- 🔍 **Real-time Search** - Instant Q&A with streaming responses
+- 📝 **Conversation History** - Track all your queries and answers
+- 📊 **Cost Analytics** - Live tracking of API costs per query
+- 📚 **Source Highlighting** - View and explore source documents
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
+
+#### Backend Features:
+- 🚀 **Express API Server** - RESTful endpoints for search and Q&A
+- 🔄 **Streaming Support** - Server-Sent Events for real-time responses
+- 💾 **In-Memory Storage** - Conversation history and analytics
+- 🔍 **Hybrid Search** - Combines vector + keyword search
+- 📊 **Re-ranking** - MMR for optimal result ordering
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js >= 18.0.0
+- npm >= 9.0.0
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
 - Pinecone API key ([Get one here](https://www.pinecone.io/))
 
 ### Installation
 
 ```bash
-# Clone and install
+# Clone repository
 git clone https://github.com/yourusername/technical-docs-ai.git
 cd technical-docs-ai
+
+# Install all dependencies (monorepo)
 npm install
 
-# Configure environment
+# Configure backend environment
+cd packages/rag-engine
 cp .env.example .env
 # Edit .env with your API keys
+
+# Return to root
+cd ../..
 ```
 
-### Configuration
+### Environment Configuration
 
-Edit `.env` with your credentials:
+Edit `packages/rag-engine/.env`:
 
 ```bash
-# OpenAI (for embeddings)
+# OpenAI
 OPENAI_API_KEY=sk-...
 EMBEDDING_MODEL=text-embedding-3-small
+LLM_MODEL=gpt-4o-mini
 
-# Pinecone (vector database)
+# Pinecone
 PINECONE_API_KEY=...
 PINECONE_INDEX=technical-docs
-PINECONE_REGION=us-east-1  # Free tier: use us-east-1
+PINECONE_REGION=us-east-1
 
-# Optional: Customize chunking
-CHUNK_SIZE=500
-CHUNK_OVERLAP=50
+# Server
+PORT=3001
 ```
 
-### Usage
+### Running the Application
 
 ```bash
-# 1. Initialize vector database
+# Option 1: Run both frontend and backend together
+npm run dev
+
+# Option 2: Run separately
+npm run dev:backend    # Backend on http://localhost:3001
+npm run dev:frontend   # Frontend on http://localhost:3000
+```
+
+### First Time Setup
+
+```bash
+# 1. Set up vector database (one-time)
+cd packages/rag-engine
 npm run setup:vectordb
 
-# 2. Add documentation to data/raw/
-#    (216 React docs already included)
-
-# 3. Process and embed documents
+# 2. Ingest documentation (React docs included)
 npm run ingest:docs
 
-# 4. Run the RAG Q&A demo (NEW!)
-npm run demo:rag
-
-# 5. Test hybrid search
-npm run test:search
+# 3. Start the application
+cd ../..
+npm run dev
 ```
 
-## 📊 Example: React Documentation
-
-Included dataset: **216 React documentation files** from [react.dev](https://react.dev)
-
-**Processing stats:**
-- Documents: 216 markdown files
-- Chunks generated: ~3,754
-- Tokens processed: ~500K-1M
-- Embedding cost: ~$0.01-0.02
-- Processing time: 5-10 minutes
-- Storage: ~22 MB (3.7% of free tier)
-
-## 🏗️ Architecture
-
-### Complete RAG Pipeline
-
-```
-Question → Hybrid Search → Re-ranking → Context Building → LLM → Answer + Citations
-              ↓                ↓              ↓              ↓
-      Vector + Keyword    MMR/Diversity   Token-aware   GPT-4o-mini
-       (60/40 fusion)     Relevance       Prompts       Streaming
-```
-
-### Data Ingestion Pipeline
-
-```
-Markdown Files → Loader → Chunker → Embeddings → Vector DB
-     ↓              ↓         ↓           ↓           ↓
-  216 docs    Parse YAML  Preserve   OpenAI API  Pinecone
-                          code blocks   (1536d)   (100K free)
-```
-
-### Components
-
-**RAG Q&A Engine** (NEW)
-- `QAEngine` - Complete RAG orchestrator
-- Hybrid search with configurable strategies
-- Multiple re-ranking algorithms (MMR, Diversity, Relevance)
-- Prompt templates with context injection
-- Streaming LLM responses with citations
-
-**Hybrid Search System** (NEW)
-- `HybridSearch` - Combines vector + keyword search
-- `VectorSearch` - Semantic similarity with OpenAI embeddings
-- `KeywordSearch` - BM25 algorithm with TF-IDF
-- `SearchFusion` - Reciprocal Rank Fusion (RRF)
-
-**Re-ranking Layer** (NEW)
-- `MMRReranker` - Maximal Marginal Relevance (diversity vs relevance)
-- `DiversityReranker` - Filters similar duplicates
-- `RelevanceReranker` - Boosts based on metadata matches
-
-**Prompt System** (NEW)
-- `PromptBuilder` - Token-aware context injection
-- 5 pre-built templates (Default, Concise, Code, Comparison, Tutorial)
-- Automatic citation extraction and formatting
-
-**Document Loaders**
-- `MarkdownLoader` - Parses frontmatter, preserves structure
-- `PDFLoader` - Extracts text from PDFs
-- `HTMLLoader` - Content extraction with Cheerio
-
-**Intelligent Chunking**
-- `MarkdownChunker` - Respects headings, never splits code blocks
-- 500 tokens per chunk with 50-token overlap
-- Maintains context via heading metadata
-
-**Embedding Generation**
-- OpenAI `text-embedding-3-small` (1536 dimensions)
-- Batch processing (100 texts at a time)
-- Automatic retry with exponential backoff
-
-**Vector Storage**
-- Pinecone serverless index
-- Includes metadata: source, heading, line numbers
-- Free tier: 100K vectors, 5GB storage
+Then open your browser to **http://localhost:3000**
 
 ## 📁 Project Structure
 
 ```
-technical-docs-ai/
-├── src/
-│   ├── rag/                # 🆕 RAG Q&A engine
-│   ├── search/             # 🆕 Hybrid search system
-│   ├── reranking/          # 🆕 Re-ranking strategies
-│   ├── prompts/            # 🆕 Prompt templates
-│   ├── llm/                # 🆕 LLM integration (OpenAI)
-│   ├── types/              # TypeScript type definitions
-│   ├── config/             # Environment configuration
-│   ├── ingestion/
-│   │   ├── loaders/        # Document loaders (MD, PDF, HTML)
-│   │   ├── chunkers/       # Text chunking strategies
-│   │   └── embeddings/     # Embedding generation
-│   ├── vectordb/           # Pinecone client
-│   ├── scripts/            # CLI tools & demos
-│   └── utils/              # Helper functions
-├── data/
-│   └── raw/                # Source documentation
-│       └── react/          # React docs (216 files)
-└── docs/                   # Additional documentation
+technical-docs-ai/                    # Monorepo root
+├── packages/
+│   ├── rag-engine/                   # Backend - RAG Engine & API
+│   │   ├── src/
+│   │   │   ├── server.ts            # Express API server
+│   │   │   ├── rag/                 # RAG Q&A engine
+│   │   │   ├── search/              # Hybrid search system
+│   │   │   ├── reranking/           # Re-ranking strategies
+│   │   │   ├── prompts/             # Prompt templates
+│   │   │   ├── llm/                 # LLM integration
+│   │   │   ├── ingestion/           # Document loaders & chunkers
+│   │   │   ├── vectordb/            # Pinecone client
+│   │   │   └── scripts/             # CLI tools
+│   │   ├── data/raw/                # Source documentation
+│   │   └── package.json
+│   │
+│   └── frontend/                     # Frontend - React App
+│       ├── src/
+│       │   ├── App.tsx              # Main application
+│       │   ├── components/          # React components
+│       │   │   ├── SearchInput.tsx
+│       │   │   ├── AnswerDisplay.tsx
+│       │   │   ├── SourceCard.tsx
+│       │   │   ├── ConversationHistory.tsx
+│       │   │   └── CostTracker.tsx
+│       │   ├── hooks/               # Custom React hooks
+│       │   ├── api/                 # API client
+│       │   └── types/               # TypeScript types
+│       └── package.json
+│
+├── package.json                      # Root package (workspaces)
+└── README.md
+```
+
+## 🎨 Frontend Features
+
+### Real-time Search
+- **Instant Q&A** - Ask questions and get AI-generated answers with sources
+- **Streaming Responses** - See answers appear in real-time (optional)
+- **Smart Suggestions** - Example questions to get you started
+
+### Conversation History
+- **Track All Queries** - Never lose your previous questions
+- **Quick Navigation** - Click any previous query to view its results
+- **Clear History** - Remove all conversations with one click
+
+### Source Documents
+- **Highlighted Sources** - See exactly which documents were used
+- **Relevance Scores** - Know how well each source matches your query
+- **Context Display** - View source location, heading, and line numbers
+- **Syntax Highlighting** - Code snippets displayed beautifully
+
+### Cost Analytics
+- **Real-time Tracking** - Monitor API costs as you use the app
+- **Query Statistics** - Total queries, average cost per query
+- **Cost Breakdown** - Separate search and LLM costs
+- **Auto-refresh** - Updates every 5 seconds
+
+## 🔌 API Endpoints
+
+### Backend Server (Port 3001)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/search` | POST | Hybrid search (no AI answer) |
+| `/api/qa` | POST | Full Q&A with RAG pipeline |
+| `/api/history` | GET | Get conversation history |
+| `/api/history` | DELETE | Clear conversation history |
+| `/api/analytics/cost` | GET | Get cost analytics |
+
+### Example API Usage
+
+```bash
+# Search for documents
+curl -X POST http://localhost:3001/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What are React hooks?", "topK": 10}'
+
+# Ask a question
+curl -X POST http://localhost:3001/api/qa \
+  -H "Content-Type: application/json" \
+  -d '{"query": "How do I use useEffect?", "stream": false}'
+
+# Get cost analytics
+curl http://localhost:3001/api/analytics/cost
 ```
 
 ## 🛠️ Tech Stack
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Runtime** | Node.js 18+ | JavaScript execution |
-| **Language** | TypeScript 5.3+ | Strict type safety with no `any` types |
-| **LLM** | OpenAI GPT-4o-mini | Answer generation with streaming |
-| **Embeddings** | OpenAI text-embedding-3-small | Vector generation (1536d) |
-| **Vector DB** | Pinecone | Similarity search |
-| **Keyword Search** | natural (BM25) | TF-IDF based search |
-| **Parsing** | markdown-it, cheerio, pdf-parse | Document loading |
-| **Tokens** | tiktoken | Token counting |
+### Frontend
+| Component | Technology |
+|-----------|-----------|
+| **Framework** | React 18.3 |
+| **Language** | TypeScript 5.9 |
+| **Build Tool** | Vite 7.1 |
+| **Styling** | Tailwind CSS 3.4 |
+| **Icons** | Lucide React |
+| **Markdown** | react-markdown |
 
-## 📈 Performance Metrics
+### Backend
+| Component | Technology |
+|-----------|-----------|
+| **Runtime** | Node.js 18+ |
+| **Framework** | Express 4.18 |
+| **Language** | TypeScript 5.3 |
+| **LLM** | OpenAI GPT-4o-mini |
+| **Embeddings** | text-embedding-3-small |
+| **Vector DB** | Pinecone |
+| **Keyword Search** | natural (BM25) |
 
-### Ingestion Pipeline
+## 📈 Performance
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Chunk generation | < 1 min | ~30 sec (216 docs) |
-| Embedding generation | < 10 min | ~5-8 min (3,754 chunks) |
-| Cost per ingestion | < $0.05 | ~$0.02 |
-| Vector upload | < 2 min | ~1-2 min (100 batch) |
+### Frontend
+- **First Load** - < 2 seconds
+- **Search Response** - 8-12 seconds (full RAG pipeline)
+- **UI Updates** - Instant (React 18)
+- **Bundle Size** - ~500 KB (optimized)
 
-### RAG Q&A Pipeline (NEW)
+### Backend
+- **Search Time** - 1.3-2.4 seconds
+- **Re-ranking** - 2-5 ms
+- **LLM Generation** - 5-10 seconds
+- **Total End-to-End** - 7-12 seconds
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Search time | < 3 sec | 1.3-2.4 sec |
-| Re-ranking | < 10 ms | 2-5 ms |
-| LLM generation | < 15 sec | 5-10 sec |
-| **Total end-to-end** | **< 20 sec** | **7-12 sec** |
-| Tokens per query | < 3000 | 1,500-2,800 |
-| Cost per query | < $0.05 | ~$0.01-0.03 |
-
-## 🧪 Testing & Quality
-
-```bash
-# Type checking (strict mode enabled)
-npm run typecheck
-
-# Code quality checks
-npm run validate     # Run typecheck + lint
-npm run lint         # ESLint validation
-npm run format       # Prettier formatting
-
-# Test document loading and chunking (no API calls)
-npm run test:ingestion
-
-# Test embedding generation (requires OpenAI key)
-npm run test:embedding
-
-# Test hybrid search (NEW)
-npm run test:search
-
-# Run complete RAG demo (NEW)
-npm run demo:rag
-
-# Run full ingestion pipeline
-npm run ingest:docs
-```
-
-### Code Quality Standards
-
-- ✅ **Strict TypeScript** - `strict: true` with zero `any` types
-- ✅ **No unused variables** - `noUnusedLocals` and `noUnusedParameters` enabled
-- ✅ **Explicit returns** - `noImplicitReturns` enforced
-- ✅ **Type safety** - All Pinecone SDK types properly typed
-- ✅ **ESLint** - Consistent code style
-- ✅ **Prettier** - Automated formatting
+### Costs
+- **Per Query** - $0.01-0.03
+- **Ingestion** - ~$0.02 (one-time)
+- **Vector Storage** - Free tier (100K vectors)
 
 ## 📚 Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run setup:vectordb` | Initialize Pinecone index |
-| `npm run ingest:docs` | Process and upload documents |
-| `npm run delete:index` | Delete Pinecone index |
-| `npm run test:ingestion` | Test chunking pipeline |
-| `npm run test:embedding` | Test OpenAI embeddings |
-| `npm run test:search` | **🆕** Test hybrid search |
-| `npm run demo:rag` | **🆕** Run complete RAG Q&A demo |
-| `npm run build` | Compile TypeScript |
-| `npm run typecheck` | Run TypeScript type checking |
-| `npm run lint` | Check code style with ESLint |
-| `npm run format` | Format code with Prettier |
-| `npm run validate` | Run typecheck + lint together |
-
-## 🔧 Configuration Options
-
-### Chunking Strategy
-
+### Root (Monorepo)
 ```bash
-# .env
-CHUNK_SIZE=500           # Target tokens per chunk
-CHUNK_OVERLAP=50         # Overlap for context preservation
+npm run dev                # Run both frontend & backend
+npm run dev:frontend       # Run only frontend
+npm run dev:backend        # Run only backend
+npm run build              # Build both packages
+npm run typecheck          # Type check all packages
+npm run lint               # Lint all packages
 ```
 
-**Trade-offs:**
-- Larger chunks → More context, fewer API calls, less precise
-- Smaller chunks → More precise, more API calls, less context
+### Backend (packages/rag-engine)
+```bash
+npm run dev                # Start API server (dev mode)
+npm run build              # Build TypeScript
+npm run start              # Start production server
+npm run setup:vectordb     # Initialize Pinecone
+npm run ingest:docs        # Ingest documentation
+npm run demo:rag           # CLI demo (no server)
+```
 
-### Embedding Models
+### Frontend (packages/frontend)
+```bash
+npm run dev                # Start dev server
+npm run build              # Build for production
+npm run preview            # Preview production build
+npm run typecheck          # Type check
+npm run lint               # Lint code
+```
 
-| Model | Dimensions | Cost | Use Case |
-|-------|-----------|------|----------|
-| `text-embedding-3-small` | 1536 | $0.02/1M | **Recommended** - Best value |
-| `text-embedding-3-large` | 3072 | $0.13/1M | Higher accuracy |
-| `text-embedding-ada-002` | 1536 | $0.10/1M | Legacy |
+## 🎯 Usage Examples
 
-### Pinecone Free Tier
+### Basic Search
+1. Open http://localhost:3000
+2. Type a question like "What are React hooks?"
+3. View the AI answer and source documents
+4. Check cost analytics in the sidebar
 
-**Limitations:**
-- 100,000 vectors maximum
-- 5 GB storage
-- AWS `us-east-1` region only
-- 1 index per project
+### Conversation History
+1. Ask multiple questions
+2. View all queries in the right sidebar
+3. Click any previous query to view it again
+4. Clear history when done
 
-**Current usage:** 3,754 vectors (~3.7% of limit)
+### Cost Tracking
+1. Monitor costs in real-time
+2. View total queries and average cost
+3. See breakdown of search vs LLM costs
+4. Analytics update automatically
 
-## 🚧 Roadmap
+## 🔧 Configuration
 
-### v1.0 ✅ - Completed
-- ✅ Document ingestion pipeline
-- ✅ Markdown/PDF/HTML support
-- ✅ Intelligent chunking
-- ✅ Vector embeddings
-- ✅ Pinecone integration
-- ✅ Strict TypeScript with zero `any` types
-- ✅ Comprehensive type checking
+### Backend Configuration
+Edit `packages/rag-engine/.env`:
+- `CHUNK_SIZE` - Tokens per chunk (default: 500)
+- `CHUNK_OVERLAP` - Overlap between chunks (default: 50)
+- `PORT` - API server port (default: 3001)
 
-### v2.0 ✅ - **JUST COMPLETED!**
-- ✅ **Hybrid search** (vector + keyword with RRF)
-- ✅ **Re-ranking layer** (MMR, Diversity, Relevance)
-- ✅ **Prompt templates** with context injection
-- ✅ **LLM integration** with streaming responses
-- ✅ **Complete Q&A engine** with citations
-- ✅ **Production demo** (`npm run demo:rag`)
+### Frontend Configuration
+Edit `packages/frontend/vite.config.ts`:
+- API proxy configuration
+- Port settings
+- Build optimizations
 
-### v2.1 (In Progress)
-- [ ] CLI interface for interactive queries
+## 🚧 Development Roadmap
+
+### ✅ Milestone 1 - Core Infrastructure (Completed)
+- [x] Document ingestion pipeline
+- [x] Markdown/PDF/HTML support
+- [x] Intelligent chunking
+- [x] Vector embeddings
+- [x] Pinecone integration
+
+### ✅ Milestone 2 - RAG Pipeline (Completed)
+- [x] Hybrid search (vector + keyword)
+- [x] Re-ranking layer (MMR, Diversity, Relevance)
+- [x] Prompt templates with context injection
+- [x] LLM integration with streaming
+- [x] Complete Q&A engine with citations
+
+### ✅ Milestone 3 - Full-Stack Application (Completed)
+- [x] Express API server
+- [x] React frontend with Tailwind CSS
+- [x] Real-time search interface
+- [x] Conversation history
+- [x] Cost tracking dashboard
+- [x] Source document highlighting
+
+### 🔜 Milestone 4 - Production Enhancements (Coming Soon)
+- [ ] Streaming responses in UI
+- [ ] User authentication & sessions
 - [ ] Redis caching layer
-- [ ] Query history and analytics
+- [ ] Database persistence (PostgreSQL)
+- [ ] Advanced analytics dashboard
+- [ ] Error logging & monitoring
 
-### v3.0 (Future)
-- [ ] Web UI with React
-- [ ] Multi-modal support (images)
+### 🔮 Milestone 5 - Advanced Features (Future)
+- [ ] Multi-user support with permissions
+- [ ] File upload for custom documentation
 - [ ] Fine-tuned embeddings
+- [ ] Multi-modal support (images, diagrams)
 - [ ] Agentic workflows
-- [ ] User feedback loop
+- [ ] Custom model integration
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Install dependencies
-npm install
-
-# Run in development mode
-npm run dev
-
-# Code quality checks
-npm run typecheck    # Type checking
-npm run lint         # Linting
-npm run format       # Format code
-npm run validate     # Typecheck + lint
-
-# Build for production
-npm run build
-```
+Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
@@ -373,8 +359,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgments
 
 - React documentation from [react.dev](https://react.dev)
-- OpenAI for embedding models
+- OpenAI for embeddings and LLM
 - Pinecone for vector database
+- Vite for blazing fast development
 
 ## 📞 Support
 
