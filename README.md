@@ -35,6 +35,12 @@ A complete **full-stack RAG (Retrieval-Augmented Generation)** application combi
 - 🔍 **Hybrid Search** - Combines vector + keyword search
 - 📊 **Re-ranking** - MMR for optimal result ordering
 
+## 🎬 Demo
+
+![Technical Docs AI Demo](./assets/technical-docs-ai-ui.gif)
+
+*Full-stack RAG application in action: Real-time search, AI-generated answers with citations, conversation history, and cost tracking*
+
 ## 🚀 Quick Start
 
 ### Prerequisites
