@@ -121,15 +121,211 @@ npm run dev:frontend   # Frontend on http://localhost:3000
 cd packages/rag-engine
 npm run setup:vectordb
 
-# 2. Ingest documentation (React docs included)
+# 2. Add your documentation (see Document Ingestion section below)
+# The demo uses React documentation markdown files
+# Place your .md, .pdf, or .html files in data/raw/
+
+# 3. Ingest documentation
 npm run ingest:docs
 
-# 3. Start the application
+# 4. Start the application
 cd ../..
 npm run dev
 ```
 
 Then open your browser to **http://localhost:3000**
+
+## 📄 Document Ingestion
+
+The RAG system supports ingesting documentation from multiple formats. The `data/raw` directory is **not tracked in the repository** - you need to add your own documentation files.
+
+### Supported Formats
+
+| Format | Extension | Loader | Notes |
+|--------|-----------|--------|-------|
+| **Markdown** | `.md` | MarkdownLoader | Preserves headings and code blocks |
+| **PDF** | `.pdf` | PDFLoader | Extracts text from PDF documents |
+| **HTML** | `.html` | HTMLLoader | Parses HTML and extracts text content |
+
+### Setting Up Your Documentation
+
+#### Option 1: Demo with React Documentation (Recommended for Testing)
+
+The demo shown in the GIF uses official React documentation markdown files:
+
+```bash
+cd packages/rag-engine
+
+# Create data directory
+mkdir -p data/raw
+
+# Clone React documentation (or download specific files)
+# Example: Download from https://github.com/reactjs/react.dev
+git clone --depth 1 https://github.com/reactjs/react.dev.git temp-react-docs
+
+# Copy markdown files to data/raw
+cp -r temp-react-docs/src/content/learn/*.md data/raw/
+cp -r temp-react-docs/src/content/reference/react/*.md data/raw/
+
+# Clean up
+rm -rf temp-react-docs
+
+# Ingest the documentation
+npm run ingest:docs
+```
+
+#### Option 2: Use Your Own Documentation
+
+```bash
+cd packages/rag-engine/data/raw
+
+# Add your markdown files
+cp /path/to/your/docs/*.md .
+
+# Add your PDF files
+cp /path/to/your/docs/*.pdf .
+
+# Add your HTML files
+cp /path/to/your/docs/*.html .
+
+# Ingest the documentation
+cd ../..
+npm run ingest:docs
+```
+
+### Directory Structure
+
+```
+packages/rag-engine/
+├── data/
+│   ├── raw/                    # ← Place your source files here (not tracked by git)
+│   │   ├── *.md               # Markdown files
+│   │   ├── *.pdf              # PDF files
+│   │   └── *.html             # HTML files
+│   └── processed/             # Processed chunks (generated, not tracked)
+```
+
+### Ingestion Process
+
+The ingestion pipeline performs the following steps:
+
+1. **Loading**: Reads files from `data/raw/` using appropriate loaders
+2. **Chunking**: Splits documents into semantic chunks (~500 tokens)
+3. **Embedding**: Generates vector embeddings using OpenAI's `text-embedding-3-small`
+4. **Indexing**: Stores vectors in Pinecone for semantic search
+
+```bash
+# View ingestion logs
+npm run ingest:docs
+
+# Example output:
+# 📁 Loading documents from data/raw...
+# ✅ Loaded 50 documents
+# 📊 Chunking documents...
+# ✅ Created 243 chunks
+# 🔢 Generating embeddings...
+# ✅ Generated 243 embeddings
+# 📤 Uploading to Pinecone...
+# ✅ Indexed 243 vectors
+```
+
+### Ingestion Configuration
+
+Edit `packages/rag-engine/.env` to customize chunking:
+
+```bash
+CHUNK_SIZE=500        # Tokens per chunk (default: 500)
+CHUNK_OVERLAP=50      # Overlap between chunks (default: 50)
+```
+
+### Best Practices
+
+1. **Document Format**: Markdown is preferred for code documentation
+2. **File Size**: Keep individual files under 10MB for optimal processing
+3. **Structure**: Use clear headings (H1, H2, H3) in markdown for better chunking
+4. **Naming**: Use descriptive filenames (e.g., `react-hooks.md` vs `doc1.md`)
+5. **Organization**: Group related documents in subdirectories
+
+### Example: Adding Documentation
+
+```bash
+# 1. Navigate to data directory
+cd packages/rag-engine/data/raw
+
+# 2. Add your documentation
+cat > getting-started.md << 'EOF'
+# Getting Started
+
+This is a sample documentation file.
+
+## Installation
+
+Install the package using npm:
+
+```bash
+npm install my-package
+```
+
+## Usage
+
+Import and use the package:
+
+```javascript
+import { myFunction } from 'my-package';
+myFunction();
+```
+EOF
+
+# 3. Ingest the new documentation
+cd ../..
+npm run ingest:docs
+
+# 4. Start the application
+npm run dev
+```
+
+### Troubleshooting
+
+#### "No documents found in data/raw"
+- Ensure files are in `packages/rag-engine/data/raw/`
+- Check file extensions (`.md`, `.pdf`, `.html`)
+- Verify files are not empty
+
+#### "Embedding API error"
+- Check your OpenAI API key in `.env`
+- Ensure you have API credits available
+- Verify your API key has access to `text-embedding-3-small`
+
+#### "Pinecone connection error"
+- Verify Pinecone API key in `.env`
+- Ensure index exists (run `npm run setup:vectordb`)
+- Check index name matches `PINECONE_INDEX` in `.env`
+
+### Re-ingesting Documents
+
+If you add new documents or update existing ones:
+
+```bash
+cd packages/rag-engine
+
+# Option 1: Delete index and re-ingest all documents
+npm run delete:index
+npm run setup:vectordb
+npm run ingest:docs
+
+# Option 2: Just ingest (will add to existing index)
+npm run ingest:docs
+```
+
+### Cost Estimation
+
+Ingestion costs (one-time):
+- **Embeddings**: ~$0.02 per 1000 documents (small chunks)
+- **Storage**: Free tier supports 100K vectors in Pinecone
+
+Example: Ingesting React documentation (~50 files, ~250 chunks):
+- Embedding cost: ~$0.005
+- Storage: Free (well within limits)
 
 ## 🏗️ Architecture
 
