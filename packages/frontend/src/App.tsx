@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Brain, AlertCircle } from 'lucide-react';
-import { SearchInput } from './components/SearchInput';
-import { AnswerDisplay } from './components/AnswerDisplay';
-import { SourceCard } from './components/SourceCard';
-import { ConversationHistory } from './components/ConversationHistory';
-import { CostTracker } from './components/CostTracker';
-import { useConversationHistory, useQuestion } from './hooks/useApi';
+import { SearchInput } from './components/search-input';
+import { AnswerDisplay } from './components/answer-display';
+import { SourceCard } from './components/source-card';
+import { ConversationHistory } from './components/conversation-history';
+import { CostTracker } from './components/cost-tracker';
+import { useConversationHistory, useQuestion } from './hooks/use-api';
 import type { ConversationMessage, SearchResult } from './types';
 
 function App() {

@@ -16,11 +16,26 @@ A complete **full-stack RAG (Retrieval-Augmented Generation)** application combi
 - 🤖 **LLM Integration** - GPT-4o-mini with streaming support for real-time responses
 - 📚 **Smart Citations** - Automatic source document highlighting and references
 
-### ✨ Latest Updates (Milestone 3 - Frontend Complete)
+### ✨ Latest Updates
 
-**NEW:** Full-stack application with React frontend is now live!
+#### 🏗️ Milestone 4 - Layered Architecture (October 2025) ✅
+**NEW:** Backend refactored with clean architecture principles following 2025 best practices!
 
-#### Frontend Features:
+**Architecture Improvements**:
+- 📐 **Layered Architecture** - Presentation, Application, Domain, Infrastructure layers
+- 🔧 **Dependency Injection** - Centralized DI container for all dependencies
+- 📦 **Repository Pattern** - Abstract data access (easy to swap memory → PostgreSQL)
+- 🎯 **Service Layer** - Business logic separated from HTTP concerns
+- 🏭 **Factory Pattern** - Clean creation of complex domain objects
+- ✅ **Testable** - Mock interfaces, test layers in isolation
+- 🔄 **Flexible** - Swap implementations without changing business logic
+
+See [ARCHITECTURE_SUMMARY.md](./ARCHITECTURE_SUMMARY.md) for details.
+
+#### ✅ Milestone 3 - Frontend Complete
+**Full-stack application with React frontend is now live!**
+
+**Frontend Features**:
 - 🎨 **Beautiful Dark UI** - Modern design with Tailwind CSS
 - 🔍 **Real-time Search** - Instant Q&A with streaming responses
 - 📝 **Conversation History** - Track all your queries and answers
@@ -28,10 +43,10 @@ A complete **full-stack RAG (Retrieval-Augmented Generation)** application combi
 - 📚 **Source Highlighting** - View and explore source documents
 - 📱 **Responsive Design** - Works on desktop, tablet, and mobile
 
-#### Backend Features:
+**Backend Features**:
 - 🚀 **Express API Server** - RESTful endpoints for search and Q&A
 - 🔄 **Streaming Support** - Server-Sent Events for real-time responses
-- 💾 **In-Memory Storage** - Conversation history and analytics
+- 💾 **Repository Pattern** - Pluggable storage (memory/database)
 - 🔍 **Hybrid Search** - Combines vector + keyword search
 - 📊 **Re-ranking** - MMR for optimal result ordering
 
@@ -116,6 +131,30 @@ npm run dev
 
 Then open your browser to **http://localhost:3000**
 
+## 🏗️ Architecture
+
+This project follows a **Layered Architecture Pattern** based on clean architecture principles:
+
+```
+┌─────────────────────────────────────────────┐
+│         Presentation Layer                  │  ← HTTP Controllers & Routes
+├─────────────────────────────────────────────┤
+│         Application Layer                   │  ← Services & Use Cases
+├─────────────────────────────────────────────┤
+│         Domain Layer                        │  ← RAG Engine & Core Logic
+├─────────────────────────────────────────────┤
+│         Infrastructure Layer                │  ← Repositories & External APIs
+└─────────────────────────────────────────────┘
+```
+
+**Key Benefits**:
+- ✅ Separation of concerns
+- ✅ Easy to test and maintain
+- ✅ Flexible to swap implementations
+- ✅ Ready for microservices
+
+📖 See [ARCHITECTURE_SUMMARY.md](./ARCHITECTURE_SUMMARY.md) for detailed documentation.
+
 ## 📁 Project Structure
 
 ```
@@ -123,16 +162,20 @@ technical-docs-ai/                    # Monorepo root
 ├── packages/
 │   ├── rag-engine/                   # Backend - RAG Engine & API
 │   │   ├── src/
-│   │   │   ├── server.ts            # Express API server
-│   │   │   ├── rag/                 # RAG Q&A engine
-│   │   │   ├── search/              # Hybrid search system
-│   │   │   ├── reranking/           # Re-ranking strategies
-│   │   │   ├── prompts/             # Prompt templates
-│   │   │   ├── llm/                 # LLM integration
+│   │   │   ├── presentation/        # Layer 1: Controllers & Routes
+│   │   │   ├── application/         # Layer 2: Services & Interfaces
+│   │   │   ├── infrastructure/      # Layer 4: Repositories & DI
+│   │   │   ├── rag/                 # Layer 3: RAG Q&A engine
+│   │   │   ├── search/              # Layer 3: Hybrid search system
+│   │   │   ├── reranking/           # Layer 3: Re-ranking strategies
+│   │   │   ├── prompts/             # Layer 3: Prompt templates
+│   │   │   ├── llm/                 # Layer 3: LLM integration
 │   │   │   ├── ingestion/           # Document loaders & chunkers
 │   │   │   ├── vectordb/            # Pinecone client
-│   │   │   └── scripts/             # CLI tools
+│   │   │   ├── scripts/             # CLI tools
+│   │   │   └── server.ts            # Express API server
 │   │   ├── data/raw/                # Source documentation
+│   │   ├── ARCHITECTURE.md          # Detailed architecture docs
 │   │   └── package.json
 │   │
 │   └── frontend/                     # Frontend - React App
@@ -150,6 +193,7 @@ technical-docs-ai/                    # Monorepo root
 │       └── package.json
 │
 ├── package.json                      # Root package (workspaces)
+├── ARCHITECTURE_SUMMARY.md           # Architecture overview
 └── README.md
 ```
 

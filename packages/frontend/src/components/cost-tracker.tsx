@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
-import { useCostAnalytics } from '../hooks/useApi';
+import { useCostAnalytics } from '../hooks/use-api';
 
 export function CostTracker() {
   const { analytics, loadAnalytics } = useCostAnalytics();
