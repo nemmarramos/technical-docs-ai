@@ -14,7 +14,7 @@ export class MarkdownLoader extends BaseLoader {
 
   supports(filePath: string): boolean {
     const ext = path.extname(filePath).toLowerCase();
-    return ext === '.md' || ext === '.markdown';
+    return ext === '.md' || ext === '.markdown' || ext === '.mdx';
   }
 
   async load(filePath: string): Promise<Document> {

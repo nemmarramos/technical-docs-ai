@@ -17,6 +17,7 @@ logs/
 npm-debug.log*
 
 # Data
+packages/rag-engine/data/raw/**/*
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep
@@ -47,3 +48,4 @@ FIXES.md
 DIMENSION_FIX.md
 PINECONE_FREE_TIER.md
 QUICK_FIX.md
+
